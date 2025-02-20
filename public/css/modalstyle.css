@@ -26,6 +26,8 @@
     padding: 20px;
     width: 700px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .body-container {
@@ -33,7 +35,7 @@
     min-height: 40px;
     display: flex;
     flex-direction: column;
-    gap: 1px; /
+    gap: 1px;
 }
 
 .body-container h4 {

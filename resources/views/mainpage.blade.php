@@ -43,7 +43,7 @@
             <tbody>
                 @foreach($products as $product)
                     <tr>
-                        <td>{{ $product->article }}</td>
+                        <td><a href="#" id="prod_card_button" class="art-link">{{ $product->article }}</a></td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->status }}</td>
 
@@ -64,12 +64,13 @@
     </div>
 
     <div class="button-container">
-        <button type="button" id="openModalBtn">Добавить</button>
+        <button type="button" id="add_prod_btn">Добавить</button>
     </div>
 
 </div>
 
-@include('modals.add_product')
+@include('modals.add_prod_modal')
+@include('modals.show_prod_card')
 
 <script src="{{ asset('js/modalscript.js') }}"></script>
 

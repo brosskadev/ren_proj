@@ -1,10 +1,5 @@
-<div class="modal" id="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>Добавление продукта</h2>
-            <button class="close-btn" id="closeModalBtn">&times;</button>
-        </div>
-        <form id="product-form" action="{{ route('products.store') }}" method="POST">
+<x-modal modal_id="addProductModal" modal_title="Добавление продукта">
+<form id="product-form" action="{{ route('products.store') }}" method="POST">
         @csrf
         <div class="modal-body">
             <div class="body-container">
@@ -40,8 +35,6 @@
             <div class="body-container" id="atr-container">
                 <button type="submit" id="confirm-button" class="confirm-button">Добавить</button>
             </div>
-            
-        </form>
         </div>
-    </div>
-</div>
+    </form>
+</x-modal>

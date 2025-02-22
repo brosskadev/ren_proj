@@ -4,8 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const prodCardModal = document.getElementById("Show_prod_card");
     const addProdBtn = document.getElementById("add_prod_btn");
     const prodCardButton = document.getElementById("prod_card_button");
-    const closeAddProdModalBtn = document.getElementById("closeAddProdModalBtn");
-    const closeProdCardModalBtn = document.getElementById("closeProdCardModalBtn");
 
     // 2. Переменные для формы и атрибутов
     const form = document.getElementById("product-form");
@@ -78,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h4>Значение</h4>
                     <input type="text" name="attributes[${index}][value]" class="attribute-input" required />
                 </div>
-                <button type="button" class="edit-attribute">✏️</button>
                 <button type="button" class="remove-attribute">🗑️</button>
             </div>
         `;
@@ -98,4 +95,28 @@ document.addEventListener("DOMContentLoaded", function () {
             inputs.forEach(input => input.removeAttribute("readonly"));
         }
     });
+
+    document.querySelectorAll(".prod-card-button").forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            
+            let article = this.getAttribute("data-article");
+            let modal = document.getElementById("Show_prod_card"); // Получаем нужную модалку
+            let modalTitle = modal.querySelector("#modalTitle");
+
+            console.log("Перед изменением:", modalTitle.textContent); 
+
+            if (modal && modal.id === "Show_prod_card") { 
+                modalTitle.textContent = `${article}`; // Меняем заголовок
+                console.log("После изменения:", modalTitle.textContent);
+            }
+
+            openProdCardModal();
+        });
+    });
+
+    document.getElementById("closeModalBtn").addEventListener("click", function () {
+        document.getElementById("productModal").style.display = "none";
+    });
+
 });

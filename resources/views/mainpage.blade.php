@@ -43,7 +43,10 @@
             <tbody>
                 @foreach($products as $product)
                     <tr>
-                        <td><a href="#" id="prod_card_button" class="art-link">{{ $product->article }}</a></td>
+                        <td><a href="#" class="art-link prod-card-button" data-article="{{ $product->article }}">
+                                {{ $product->article }}
+                            </a>
+                        </td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->status }}</td>
 

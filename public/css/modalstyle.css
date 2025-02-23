@@ -53,8 +53,14 @@
     color: white;
 }
 
-.custom-input, .custom-select{
+.custom-input{
     width: 550px;
+    height: 30px;
+    border-radius: 5px;
+}
+
+.custom-select{
+    width: 558px;
     height: 30px;
     border-radius: 5px;
 }
@@ -129,4 +135,23 @@
 
 .art-link:hover {
     text-decoration: underline;
+}
+
+.body-params{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 40px;
+}
+
+.body-params h4 {
+    min-width: 120px; /* Фиксированная ширина заголовков */
+    margin: 0;
+    text-align: left;
+}
+
+.body-params p {
+    margin: 0;
+    flex-grow: 1; /* Значение растягивается на оставшееся пространство */
 }

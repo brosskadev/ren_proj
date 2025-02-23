@@ -15,8 +15,8 @@
             <div class="body-container">
                 <h4>Статус</h4>
                 <select name="status" class="custom-select" required>
-                    <option value="available">Доступен</option>
-                    <option value="not_available">Не доступен</option>
+                    <option value="Доступен">Доступен</option>
+                    <option value="Не доступен">Не доступен</option>
                 </select>
             </div>
 

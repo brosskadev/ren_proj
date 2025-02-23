@@ -22,12 +22,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function closeAddProdModal() {
         addProdModal.style.display = "none";
-        form.reset(); // Очистка формы
-        atrContainer.innerHTML = ""; // Очистка атрибутов
+        form.reset();
+        atrContainer.innerHTML = "";
     }
 
     function closeProdCardModal() {
+
+        document.getElementById("modalTitle").textContent = "";
+        document.getElementById("productArticle").textContent = "";
+        document.getElementById("productName").textContent = "";
+        document.getElementById("productStatus").textContent = "";
+        document.getElementById("productAttributes").textContent = "";
+        atrContainer.innerHTML = "";
+
         prodCardModal.style.display = "none";
+        atrContainer.innerHTML = "";
     }
 
     // Назначаем обработчики событий на кнопки
@@ -101,22 +110,59 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
             
             let article = this.getAttribute("data-article");
-            let modal = document.getElementById("Show_prod_card"); // Получаем нужную модалку
-            let modalTitle = modal.querySelector("#modalTitle");
-
-            console.log("Перед изменением:", modalTitle.textContent); 
+            let modal = document.getElementById("Show_prod_card");
+            let modalTitle = modal.querySelector("#modalTitle"); 
 
             if (modal && modal.id === "Show_prod_card") { 
-                modalTitle.textContent = `${article}`; // Меняем заголовок
-                console.log("После изменения:", modalTitle.textContent);
+                modalTitle.textContent = `${article}`;
             }
 
             openProdCardModal();
+
+            fetch(`/product/${article}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error("Ошибка:", data.error);
+                    return;
+                }
+
+                // Заполняем модалку данными
+                document.getElementById("productArticle").textContent = data.article;
+                document.getElementById("productName").textContent = data.name;
+                document.getElementById("productStatus").textContent = data.status;
+                const attributesContainer = document.getElementById("productAttributes");
+                attributesContainer.innerHTML = Array.isArray(data.attributes) && data.attributes.length > 0 
+                ? data.attributes.map(attr => `<p>${attr.key}: ${attr.value}</p>`).join("")
+                : "<p>Нет атрибутов</p>";
+            })
         });
     });
 
-    document.getElementById("closeModalBtn").addEventListener("click", function () {
-        document.getElementById("productModal").style.display = "none";
-    });
+    document.querySelectorAll(".delete-product-btn").forEach(button => {
+        button.addEventListener("click", function (event) {
 
+            let modal = document.getElementById("Show_prod_card");
+            let modalTitle = modal.querySelector("#modalTitle");
+
+            fetch(`/product/${modalTitle.textContent}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+            if (data.error) {;
+                alert("Ошибка: " + data.error);
+            } else {
+                alert("Продукт успешно удален");
+                location.reload();
+            }
+            })
+            .catch(error => console.error("Ошибка:", error));
+
+        })
+    });
 });

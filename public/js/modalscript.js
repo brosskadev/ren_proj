@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const prodCardModal = document.getElementById("Show_prod_card");
     const addProdBtn = document.getElementById("add_prod_btn");
     const prodCardButton = document.getElementById("prod_card_button");
+    const editModalBtn = document.getElementById("editModalBtn")
 
     // 2. Переменные для формы и атрибутов
     const form = document.getElementById("product-form");
@@ -39,12 +40,13 @@ document.addEventListener("DOMContentLoaded", function () {
         atrContainer.innerHTML = "";
     }
 
-    // Назначаем обработчики событий на кнопки
+    //обработчики событий на кнопки
     if (addProdBtn) addProdBtn.addEventListener("click", openAddProdModal);
     if (prodCardButton) prodCardButton.addEventListener("click", function (event) {
-        event.preventDefault(); // Предотвращает переход по ссылке
+        event.preventDefault();
         openProdCardModal();
     });
+    if (editModalBtn) editModalBtn.addEventListener("click", openAddProdModal);
 
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("close-btn")) {
@@ -52,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (modal) modal.style.display = "none";
         }
         if (event.target.classList.contains("modal")) {
-            event.target.style.display = "none"; // Закрытие при клике вне контента
+            event.target.style.display = "none";
         }
     });
 
@@ -164,5 +166,51 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Ошибка:", error));
 
         })
+    });
+
+    document.querySelectorAll(".editModalBtn").forEach(button => {
+        button.addEventListener("click", function (event) {
+
+            const statusMap = {
+                "available": "Доступен",
+                "not_available": "Не доступен"
+            };
+
+            let modal = document.getElementById("Show_prod_card");
+            let modalTitle = modal.querySelector("#modalTitle");
+            
+            let editmodal = document.getElementById("addProductModal");
+            let editTitle = editmodal.querySelector("#modalTitle"); 
+
+            article = modalTitle.textContent;
+
+            closeProdCardModal();
+
+            openAddProdModal();
+
+                editTitle.textContent = `Редактировать ${article}`;
+
+            fetch(`/product/${article}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error("Ошибка:", data.error);
+                    return;
+                }
+
+                let articleInput = document.querySelector("input[name='article']");
+                let nameInput = document.querySelector("input[name='name']");
+                let statusSelect = document.querySelector("select[name='status']");
+                //let attributesContainer = document.getElementById("atr-container");
+
+                // Заполняем модалку данными
+                articleInput.value = data.article; // Вставляем артикул
+                nameInput.value = data.name;       // Вставляем название
+                statusSelect.value = statusMap[data.status] || "Доступен";
+                
+            })
+
+            .catch(error => console.error("Ошибка запроса:", error));
+        });
     });
 });

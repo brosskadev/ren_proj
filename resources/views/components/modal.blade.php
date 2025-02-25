@@ -7,7 +7,7 @@
 
             <div class="modal-header-buttons">
                 @if($modal_id === 'Show_prod_card')
-                    <button type="button" class="editModalBtn" id="editModalBtn" >✏️</button>
+                    <button type="button" class="editModalBtn" id="editModalBtn" data-action="edit">✏️</button>
                     <button type="button" class="delete-product-btn">🗑️</button>
                 @endif
 

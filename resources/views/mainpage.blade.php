@@ -68,7 +68,7 @@
     </div>
 
     <div class="button-container">
-        <button type="button" id="add_prod_btn">Добавить</button>
+        <button type="button" id="add_prod_btn" data-action="create">Добавить</button>
     </div>
 
 </div>

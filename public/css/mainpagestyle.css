@@ -109,6 +109,7 @@ html, body{
 .table-container{
     flex-grow: 1;
     max-width: 70%;
+    overflow-x: auto;
 }
 
 .table-container table{
@@ -118,6 +119,7 @@ html, body{
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    table-layout: fixed;
 }
 
 .table-container th{
@@ -133,6 +135,9 @@ html, body{
     text-align: left;
     vertical-align: middle;
     border-bottom: 1px solid #ddd;
+    word-break: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .button-container {

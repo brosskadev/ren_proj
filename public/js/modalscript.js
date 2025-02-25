@@ -1,17 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. Переменные для модальных окон
+
     const addProdModal = document.getElementById("addProductModal");
     const prodCardModal = document.getElementById("Show_prod_card");
     const addProdBtn = document.getElementById("add_prod_btn");
     const prodCardButton = document.getElementById("prod_card_button");
     const editModalBtn = document.getElementById("editModalBtn")
 
-    // 2. Переменные для формы и атрибутов
     const form = document.getElementById("product-form");
     const atrContainer = document.getElementById("atr-container");
     const addAttributeBtn = document.getElementById("add-attribute");
 
-    // === ФУНКЦИИ ОТКРЫТИЯ И ЗАКРЫТИЯ МОДАЛОК ===
     
     function openAddProdModal() {
         addProdModal.style.display = "flex";
@@ -28,8 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function closeProdCardModal() {
-
-        document.getElementById("modalTitle").textContent = "";
         document.getElementById("productArticle").textContent = "";
         document.getElementById("productName").textContent = "";
         document.getElementById("productStatus").textContent = "";
@@ -40,13 +36,18 @@ document.addEventListener("DOMContentLoaded", function () {
         atrContainer.innerHTML = "";
     }
 
-    //обработчики событий на кнопки
-    if (addProdBtn) addProdBtn.addEventListener("click", openAddProdModal);
+    if (addProdBtn) addProdBtn.addEventListener("click", function (event){
+        openAddProdModal();
+        let title = document.getElementById("modalTitle");
+        title.textContent="Добавить продукт";
+        let confirmButton = document.getElementById("confirm-button");
+        confirmButton.setAttribute("data-action", "create");
+    });
     if (prodCardButton) prodCardButton.addEventListener("click", function (event) {
         event.preventDefault();
         openProdCardModal();
     });
-    if (editModalBtn) editModalBtn.addEventListener("click", openAddProdModal);
+    if (editModalBtn) editModalBtn.addEventListener("click", function (event){});
 
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("close-btn")) {
@@ -58,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Закрытие при клике вне модального окна
     window.addEventListener("click", function (event) {
         if (event.target === addProdModal) {
             closeAddProdModal();
@@ -67,8 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
             closeProdCardModal();
         }
     });
-
-    // === УПРАВЛЕНИЕ АТРИБУТАМИ ===
     
     function addAttribute(event) {
         event.preventDefault();
@@ -129,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     return;
                 }
 
-                // Заполняем модалку данными
                 document.getElementById("productArticle").textContent = data.article;
                 document.getElementById("productName").textContent = data.name;
                 document.getElementById("productStatus").textContent = data.status;
@@ -138,6 +135,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 ? data.attributes.map(attr => `<p>${attr.key}: ${attr.value}</p>`).join("")
                 : "<p>Нет атрибутов</p>";
             })
+
+            let confirmButton = document.getElementById("confirm-button");
+            confirmButton.setAttribute("data-action", "edit");
         });
     });
 
@@ -167,6 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         })
     });
+
 
     document.querySelectorAll(".editModalBtn").forEach(button => {
         button.addEventListener("click", function (event) {
@@ -201,16 +202,124 @@ document.addEventListener("DOMContentLoaded", function () {
                 let articleInput = document.querySelector("input[name='article']");
                 let nameInput = document.querySelector("input[name='name']");
                 let statusSelect = document.querySelector("select[name='status']");
-                //let attributesContainer = document.getElementById("atr-container");
 
-                // Заполняем модалку данными
-                articleInput.value = data.article; // Вставляем артикул
-                nameInput.value = data.name;       // Вставляем название
+                articleInput.value = data.article;
+                nameInput.value = data.name;
                 statusSelect.value = statusMap[data.status] || "Доступен";
                 
-            })
+                atrContainer.innerHTML = "";
 
+                if (data.attributes && Array.isArray(data.attributes)) {
+                    data.attributes.forEach((attr, index) => {
+                        const newAttribute = document.createElement("div");
+                        newAttribute.classList.add("attribute-row");
+                        newAttribute.innerHTML = `
+                            <div class="attribute-container">
+                                <div class="attribute-group">
+                                    <h4>Название</h4>
+                                    <input type="text" name="attributes[${index}][key]" class="attribute-input" required value="${attr.key}" />
+                                </div>
+                                <div class="attribute-group">
+                                    <h4>Значение</h4>
+                                    <input type="text" name="attributes[${index}][value]" class="attribute-input" required value="${attr.value}" />
+                                </div>
+                                <button type="button" class="remove-attribute">🗑️</button>
+                            </div>
+                        `;
+                        atrContainer.appendChild(newAttribute);
+                    });
+                }
+            })
             .catch(error => console.error("Ошибка запроса:", error));
         });
     });
-});
+
+    document.getElementById("product-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        
+        let confirmButton = document.getElementById("confirm-button");
+        let action = confirmButton.getAttribute("data-action");
+    
+        if (action === "create") {
+            await addNewProd();
+        } else if (action === "edit") {
+            await updateProduct();
+        }
+    });
+    
+    async function addNewProd() {
+        let form = document.getElementById("product-form");
+        let formData = new FormData(form);
+    
+        try {
+            let response = await fetch("/product", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
+                }
+            });
+
+            console.log("Статус ответа:", response.status);
+    
+            let result = await response.json();
+    
+            if (result.success) {
+                closeAddProdModal();
+                form.reset();
+                location.reload();
+            } else {
+                alert("Ошибка при создании продукта");
+            }
+        } catch (error) {
+            console.error("Ошибка:", error);
+        }
+    }
+    
+    async function updateProduct() {
+
+        let modal = document.getElementById("Show_prod_card");
+        let modalTitle = modal.querySelector("#modalTitle");
+
+        let oldArticle = modalTitle.textContent;
+
+        console.log(oldArticle);
+
+        let form = document.getElementById("product-form");
+        let formData = new FormData(form);
+        formData.append("_method", "PUT");
+
+        try {
+            let response = await fetch(`/product/${oldArticle}`, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                }
+            });
+    
+            let result;
+    
+            try {
+                result = await response.json();
+            } catch (jsonError) {
+                console.error("Ошибка парсинга JSON:", jsonError);
+                let errorText = await response.text();
+                console.error("Ответ сервера:", errorText);
+                return;
+            }
+    
+            if (response.ok && result.success) {
+                closeAddProdModal();
+                form.reset();
+                location.reload();
+            } else {
+                alert("Ошибка при обновлении продукта: " + (result.message || "Неизвестная ошибка"));
+            }
+        } catch (error) {
+            console.error("Ошибка запроса:", error);
+        }
+    }
+});    

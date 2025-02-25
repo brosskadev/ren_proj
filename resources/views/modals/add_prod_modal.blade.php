@@ -1,5 +1,5 @@
 <x-modal modal_id="addProductModal" modal_title="Добавление продукта">
-<form id="product-form" action="{{ route('products.store') }}" method="POST">
+<form id="product-form">
         @csrf
         <div class="modal-body">
             <div class="body-container">
@@ -33,7 +33,7 @@
             </div>
 
             <div class="body-container" id="atr-container">
-                <button type="submit" id="confirm-button" class="confirm-button">Добавить</button>
+                <button type="submit" id="confirm-button" class="confirm-button" data-action="create">Добавить</button>
             </div>
         </div>
     </form>

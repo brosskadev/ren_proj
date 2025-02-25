@@ -22,15 +22,28 @@ class ProductController extends Controller
     }
 
     public function store(Request $request){
-        $request -> validate([
+        $validatedData = $request->validate([
             'article' => 'required|unique:products',
             'name' => 'required',
             'status' => 'required',
             'attributes' => 'nullable|array',
         ]);
-        Product::create($request->all());
-
-        return redirect()->back()->with('success','Продукт добавлен');
+    
+        try {
+            $product = Product::create($validatedData);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Продукт добавлен',
+                'product' => $product
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ошибка при добавлении продукта',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function getProductByArticle($article){
@@ -63,6 +76,25 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json(['message' => 'Продукт успешно удален'], 200);
+    }
+
+    public function update(Request $request, $article) {
+        $request->validate([
+            'article' => 'required',
+            'name' => 'required',
+            'status' => 'required',
+            'attributes' => 'nullable|array',
+        ]);
+    
+        $product = Product::where('article', $article)->first();
+    
+        if (!$product) {
+            return response()->json(['success' => false, 'message' => 'Продукт не найден'], 404);
+        }
+    
+        $product->update($request->all());
+    
+        return response()->json(['success' => true, 'message' => 'Продукт обновлен']);
     }
 
 }

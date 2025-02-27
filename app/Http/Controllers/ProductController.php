@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(){
+    public function main(){
         $products = Product::all();
 
         foreach ($products as $product) {
@@ -53,12 +53,10 @@ class ProductController extends Controller
             return response()->json(['error' => 'Продукт не найден'], 404);
         }
 
-        // Декодируем JSON-атрибуты, если это строка
         if (is_string($product->attributes)) {
             $product->attributes = json_decode($product->attributes, true) ?? [];
         }
 
-        // Если атрибутов нет, возвращаем сообщение
         if (empty($product->attributes)) {
             $product->attributes = [['key' => '—', 'value' => 'Нет атрибутов']];
         }

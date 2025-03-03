@@ -60,7 +60,7 @@
 }
 
 .custom-select{
-    width: 558px;
+    width: 550px;
     height: 30px;
     border-radius: 5px;
 }
@@ -146,12 +146,12 @@
 }
 
 .body-params h4 {
-    min-width: 120px; /* Фиксированная ширина заголовков */
+    min-width: 120px;
     margin: 0;
     text-align: left;
 }
 
 .body-params p {
     margin: 0;
-    flex-grow: 1; /* Значение растягивается на оставшееся пространство */
+    flex-grow: 1;
 }

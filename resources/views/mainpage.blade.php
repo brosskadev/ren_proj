@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout sidenav_product="Продукты">
 
 <div class="content-wrapper">
 

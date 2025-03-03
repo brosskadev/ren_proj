@@ -323,3 +323,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });    
+
+document.addEventListener("DOMContentLoaded", function () {
+    let dropdownToggle = document.querySelector(".topbar-username");
+    let dropdownMenu = document.querySelector(".admin-dropdown");
+
+    dropdownToggle.addEventListener("click", function (event) {
+        event.stopPropagation(); // Чтобы клик по кнопке не закрывал сразу меню
+        dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+});

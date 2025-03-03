@@ -2,24 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Services\AuthService;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function showloginpage(){
         return view('login_page');
     }
 
-    public function login(Request $request){
-        $request->validate([
-            'email'=>['required','email'],
-            'password'=>['required'],
-        ]);
+    public function login(LoginRequest $request){
 
-        if(Auth::attempt($request->only('email','password'))){
+        if ($this->authService->login($request->email, $request->password)){
             $request->session()->regenerate();
-            return redirect()->intended('/main');
+            return redirect('/main');
         }
 
         return back()->withErrors(['email' => 'Неверные учетные данные']);

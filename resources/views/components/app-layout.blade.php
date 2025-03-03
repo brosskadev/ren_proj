@@ -1,4 +1,4 @@
-@props(['modal_id', 'modal_title'])
+@props(['modal_id', 'modal_title', 'sidenav_product' ])
 
 <div id="applayot">
 <!DOCTYPE html>
@@ -20,16 +20,36 @@
         </div>
         <div class="sidenav-companyname">Enterprise<br> Resource<br> Planning<br></div>
     </div>
-    <div class="sidenav-product">Продукты</div>
+    <div class="sidenav-product">{{ $sidenav_product }}</div>
 </div>
 
 <div class="topbar">
+
     <div class="topbar-product">
-        ПРОДУКТЫ
+        <a href="{{ route('main') }}" class="{{ request()->routeIs('main') ? 'active' : '' }}">Продукты</a>
+
+        @if(Auth::check() && Auth::user()->role === 'admin')
+            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Админ-панель</a>
+        @endif
     </div>
+    
     <div class="topbar-username">
-        Иванов Иван Иванович
+    <a href="#" class="art-link"> {{ Auth::user()->name }} </a>
+    <div class="admin-dropdown">
+        <a href="/profile">Профиль</a>
+        @if(Auth::check() && Auth::user()->role === 'admin')
+            <a href="{{ route('dashboard') }}">Админ-панель</a>
+        @endif
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+
+        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            Выход
+        </a>
     </div>
+</div>
+</div>
 </div>
 
 {{$slot}}

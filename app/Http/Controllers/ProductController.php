@@ -2,36 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
+use App\Services\ProductService;
+use App\Http\Requests\UpdateProductRequest;
+use App\Http\Requests\StoreProductRequest;
 
 class ProductController extends Controller
 {
-    public function main(){
-        $products = Product::all();
+    protected $productService;
 
-        foreach ($products as $product) {
-            if (is_string($product->attributes)) {
-                $decoded = json_decode($product->attributes, true);
-                $product->attributes = is_array($decoded) ? $decoded : [];
-            }
-        }
-
-        return view('mainpage', compact('products'));
+    public function __construct(ProductService $productService){
+        $this->productService = $productService;
     }
 
-    public function store(Request $request){
-        $validatedData = $request->validate([
-            'article' => 'required|unique:products',
-            'name' => 'required',
-            'status' => 'required',
-            'attributes' => 'nullable|array',
-        ]);
-    
+    public function main(){
+        $products = $this->productService->getAllProducts();
+        return view('mainpage', ['user' => Auth::user(), 'products' => $products]);
+    }
+
+    public function store(StoreProductRequest $request){
         try {
-            $product = Product::create($validatedData);
-    
+            $product = $this->productService->createProduct($request->validated());
+
             return response()->json([
                 'success' => true,
                 'message' => 'Продукт добавлен',
@@ -47,51 +39,30 @@ class ProductController extends Controller
     }
 
     public function getProductByArticle($article){
-        $product = Product::where('article', $article)->first();
+        $product = $this->productService->getProductByArticle($article);
 
         if (!$product) {
             return response()->json(['error' => 'Продукт не найден'], 404);
-        }
-
-        if (is_string($product->attributes)) {
-            $product->attributes = json_decode($product->attributes, true) ?? [];
-        }
-
-        if (empty($product->attributes)) {
-            $product->attributes = [['key' => '—', 'value' => 'Нет атрибутов']];
         }
 
         return response()->json($product);
     }
 
     public function deleteProduct($article){
-        $product = Product::where('article', $article)->first();
-
-        if (!$product) {
+        if (!$this->productService->deleteProduct($article)) {
             return response()->json(['error' => 'Продукт не найден'], 404);
         }
-
-        $product->delete();
 
         return response()->json(['message' => 'Продукт успешно удален'], 200);
     }
 
-    public function update(Request $request, $article) {
-        $request->validate([
-            'article' => 'required',
-            'name' => 'required',
-            'status' => 'required',
-            'attributes' => 'nullable|array',
-        ]);
-    
-        $product = Product::where('article', $article)->first();
-    
-        if (!$product) {
+    public function update(UpdateProductRequest $request, $article){
+        $updatedProduct = $this->productService->updateProduct($article, $request->validated());
+
+        if (!$updatedProduct) {
             return response()->json(['success' => false, 'message' => 'Продукт не найден'], 404);
         }
-    
-        $product->update($request->all());
-    
+
         return response()->json(['success' => true, 'message' => 'Продукт обновлен']);
     }
 

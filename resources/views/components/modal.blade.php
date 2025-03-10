@@ -9,6 +9,9 @@
                 @if($modal_id === 'Show_prod_card')
                     <button type="button" class="editModalBtn" id="editModalBtn" data-action="edit">✏️</button>
                     <button type="button" class="delete-product-btn">🗑️</button>
+                @elseif($modal_id === 'Show_user_card')
+                    <button type="button" class="editUserModalBtn" id="editUserModalBtn" data-action="edit">✏️</button>
+                    <button type="button" class="delete-user-btn">🗑️</button>
                 @endif
 
                 <button class="close-btn" id="closeModalBtn">&times;</button>

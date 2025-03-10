@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
-use Illuminate\Support\Facades\Auth;
-use App\Services\AuthService;
+use App\Services\Interfaces\AuthServiceInterface;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    protected $authService;
+    protected AuthServiceInterface $authService;
 
-    public function __construct(AuthService $authService)
+    public function __construct(AuthServiceInterface $authService)
     {
         $this->authService = $authService;
     }
@@ -31,10 +30,9 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request){
-        Auth::logout();
+        $this->authService->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/login');
     }
-
 }

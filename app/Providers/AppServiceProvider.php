@@ -7,6 +7,10 @@ use App\Services\AuthService;
 use App\Repositories\AuthRepository;
 use App\Services\ProductService;
 use App\Repositories\ProductRepository;
+use App\Services\AdminService;
+use App\Services\Interfaces\AuthServiceInterface;
+use App\Services\Interfaces\ProductServiceInterface;
+use App\Services\Interfaces\AdminServiceInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,23 +19,21 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(AuthRepository::class, function ($app) {
+        // Привязка интерфейсов к реализациям
+        $this->app->bind(AdminServiceInterface::class, AdminService::class);
+        $this->app->bind(AuthServiceInterface::class, AuthService::class);
+        $this->app->bind(ProductServiceInterface::class, ProductService::class);
+
+        // Привязка репозиториев
+        $this->app->bind(AuthRepository::class, function ($app) {
             return new AuthRepository();
         });
     
-        $this->app->singleton(AuthService::class, function ($app) {
-            return new AuthService($app->make(AuthRepository::class));
-        });
-
-
-        $this->app->singleton(ProductRepository::class, function ($app) {
+        $this->app->bind(ProductRepository::class, function ($app) {
             return new ProductRepository();
         });
-    
-        $this->app->singleton(ProductService::class, function ($app) {
-            return new ProductService($app->make(ProductRepository::class));
-        });
     }
+
 
     /**
      * Bootstrap any application services.

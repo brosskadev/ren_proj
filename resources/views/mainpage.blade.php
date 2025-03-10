@@ -47,10 +47,6 @@
 @include('modals.add_prod_modal')
 @include('modals.show_prod_card')
 
-<link rel="stylesheet" href="{{ asset('css/mainpagestyle.css') }}">
-<link rel="stylesheet" href="{{ asset('css/modalstyle.css') }}">
-
-
 </body>
 </html>
 

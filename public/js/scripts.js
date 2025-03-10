@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function addNewProd() {
         let form = document.getElementById("product-form");
         let formData = new FormData(form);
-    
+
         try {
             let response = await fetch("/product", {
                 method: "POST",
@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let dropdownMenu = document.querySelector(".admin-dropdown");
 
     dropdownToggle.addEventListener("click", function (event) {
-        event.stopPropagation(); // Чтобы клик по кнопке не закрывал сразу меню
+        event.stopPropagation();
         dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
     });
 

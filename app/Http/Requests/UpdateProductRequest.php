@@ -27,7 +27,7 @@ class UpdateProductRequest extends FormRequest
             'name' => 'required|string',
             'status' => 'required|string',
             'attributes' => 'nullable|array',
-            'article' => function ($attribute, $value, $fail) {
+            'article' => function ($value, $fail) {
                 $product = Product::where('article', $this->route('article'))->first();
                 
                 if (!$product) {

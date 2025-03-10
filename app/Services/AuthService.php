@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Repositories\AuthRepository;
+use App\Services\Interfaces\AuthServiceInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
-class AuthService{
+class AuthService implements AuthServiceInterface{
     protected $authRepo;
 
     public function __construct(AuthRepository $authRepo){

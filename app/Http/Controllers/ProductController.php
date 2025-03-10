@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Interfaces\ProductServiceInterface;
 use Illuminate\Support\Facades\Auth;
-use App\Services\ProductService;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Requests\StoreProductRequest;
 
 class ProductController extends Controller
 {
-    protected $productService;
+    protected ProductServiceInterface $productService;
 
-    public function __construct(ProductService $productService){
+    public function __construct(ProductServiceInterface $productService)
+    {
         $this->productService = $productService;
     }
 

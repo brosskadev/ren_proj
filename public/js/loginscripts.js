@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(){
     document.getElementById("login-form").addEventListener("submit", async function (event) {
-        event.preventDefault(); // Останавливаем стандартную отправку формы
+        event.preventDefault();
 
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function(){
         let result = await response.json();
 
         if (response.ok) {
-            window.location.href = "/main"; // Перенаправляем на страницу
+            window.location.href = "/dashboard";
         } else {
             document.getElementById("error-message").textContent = result.error;
         }

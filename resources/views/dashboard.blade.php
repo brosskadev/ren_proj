@@ -7,21 +7,21 @@
                 <th>id</th>
                 <th>name</th>
                 <th>email</th>
-                <th>created_at</th>
                 <th>role</th>
+                <th>created_at</th>
             </tr>
         </thead>
         <tbody>
         @foreach($users as $user)
                     <tr>
-                        <td><a href="" class="">
-                                {{ $user->id }}
+                    <td>{{ $user->id }}</td>
+                        <td><a href="#" class="art-link open_user_card" data-article="{{ $user->name }}">
+                                {{ $user->name }}
                             </a>
                         </td>
-                        <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ $user->created_at }}</td>
                         <td>{{ $user->role }}</td>
+                        <td>{{ $user->created_at }}</td>
 
                     </tr>
                  @endforeach
@@ -29,6 +29,14 @@
     </table>
 </div>
 
+<div class="button-container">
+    <button type="button" id="add_user_btn" data-action="create">Добавить</button>
+</div>
+
+@include('modals.add_user_modal')
+@include('modals.show_user_modal')
+
+<script src="{{ asset('js/dashboardscripts.js') }}"></script>
 </div>
 
 </x-app-layout>

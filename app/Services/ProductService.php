@@ -4,8 +4,11 @@ namespace App\Services;
 
 use App\Repositories\ProductRepository;
 use App\Models\Product;
+use App\Services\Interfaces\ProductServiceInterface;
+use App\Jobs\SendProductNotificationJob;
+use Illuminate\Support\Facades\Auth;
 
-class ProductService{
+class ProductService implements ProductServiceInterface{
     protected $productRepo;
 
     public function __construct(ProductRepository $productRepo){
@@ -22,7 +25,16 @@ class ProductService{
 
     public function createProduct(array $data): Product
     {
-        return $this->productRepo->create($data);
+        $product = $this->productRepo->create($data);
+
+        $user = Auth::user();
+        $userEmail = $user ? $user->email : null;
+
+        if ($userEmail) {
+            dispatch(new SendProductNotificationJob($product, $userEmail));
+        }
+
+    return $product;
     }
 
     public function getProductByArticle(string $article): ?Product

@@ -54,11 +54,10 @@
 
 {{$slot}}
 
-
 @include('modals.add_prod_modal')
 @include('modals.show_prod_card')
 
-<script src="{{ asset('js/modalscript.js') }}"></script>
+<script src="{{ asset('js/scripts.js') }}"></script>
 
 </body>
 </html>

@@ -34,4 +34,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware([AdminMiddleware::class])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'showDashboard'])->name('dashboard');
+    Route::get('/dashboard/users/{name}', [AdminController::class, 'getUser']);
+    Route::delete('/dashboard/users/{name}', [AdminController::class, 'deleteUser']);
+    Route::post('/dashboard/users', [AdminController::class, 'createUser']);
+    Route::put('/dashboard/users/{name}', [AdminController::class, 'updateUser']);
 });

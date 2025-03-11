@@ -6,6 +6,7 @@ use App\Services\Interfaces\ProductServiceInterface;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Requests\StoreProductRequest;
+use App\Jobs\SendProductNotificationJob;
 
 class ProductController extends Controller
 {
@@ -24,6 +25,8 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request){
         try {
             $product = $this->productService->createProduct($request->validated());
+
+            SendProductNotificationJob::dispatch($product, Auth::user()->email);
 
             return response()->json([
                 'success' => true,
